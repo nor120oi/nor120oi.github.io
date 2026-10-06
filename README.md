@@ -2,34 +2,36 @@
             background: #f5f7fb; border-radius: 18px;
             font-family: system-ui, sans-serif; color: #172b4d;">
 
-  <div style="color: #c53030; font-size: 12px; font-weight: 700;
-              letter-spacing: 2px; text-transform: uppercase;">
-    Politique suisse · Carte interactive
-  </div>
-
-  <h1 style="font-size: 38px; line-height: 1.15;
-             margin: 18px 0; color: #172b4d; border: none;">
-    Le Conseil national,<br>
-    au fil des liens.
+  <h1 style="font-size: 32px; line-height: 1.2;
+             margin: 0 0 18px; color: #172b4d; border: none;">
+    Liens d’intérêts au Conseil national
   </h1>
 
-  <p style="font-size: 19px; line-height: 1.7; color: #526078;">
-    Explorez les liens d’intérêts des membres du Conseil national suisse
-    à travers une carte interactive.
+  <p style="font-size: 18px; line-height: 1.7; color: #526078;">
+    Voici une carte interactive des liens d’intérêts des membres du Conseil national.
+    Il en existe deux versions : l’une basée sur le registre officiel du Parlement,
+    l’autre sur les données de <a href="https://lobbywatch.ch/fr"
+    style="color: #bc3038;">Lobbywatch</a>, plus détaillées.
   </p>
 
-  <a href="./CN_lobbyWatch.html"
-     style="display: inline-block; margin-top: 18px; padding: 15px 24px;
-            background: #bc3038; color: #ffffff; border-radius: 9px;
-            text-decoration: none; font-weight: 700;">
-    Explorer la carte →
-  </a>
+  <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px;">
+    <a href="./CN_parlement.html"
+       style="padding: 13px 20px; background: #bc3038; color: #fff;
+              border-radius: 8px; text-decoration: none; font-weight: 600;">
+      Version Parlement
+    </a>
+    <a href="./CN_lobbyWatch.html"
+       style="padding: 13px 20px; background: #fff; color: #bc3038;
+              border: 1px solid #bc3038; border-radius: 8px;
+              text-decoration: none; font-weight: 600;">
+      Version Lobbywatch
+    </a>
+  </div>
 
-  <p style="margin-top: 32px; padding-top: 20px;
+  <p style="margin-top: 28px; padding-top: 18px;
             border-top: 1px solid #dce2ec;
             font-size: 13px; line-height: 1.6; color: #64748b;">
-    Un lien d’intérêts ne constitue pas, à lui seul, une preuve
-    d’influence sur les décisions politiques.
+    Un lien d’intérêts ne prouve pas, à lui seul, une influence sur les décisions politiques.
   </p>
 
 </div>
