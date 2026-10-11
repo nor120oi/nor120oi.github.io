@@ -1,178 +1,130 @@
-<div lang="en" style="
-  max-width: 720px;
-  margin: 40px auto;
-  padding: clamp(22px, 5vw, 48px);
-  background: #f6f3eb;
-  color: #111;
-  font-family: Charter, 'Iowan Old Style', Georgia, serif;
-  font-size: 18px;
-  line-height: 1.6;
-">
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Noah Robyr · politics &amp; data</title>
+<meta name="description" content="Interactive projects in political science by Noah Robyr: interest ties in the Swiss National Council, and lethal police actions and the vote in France.">
+<meta name="author" content="Noah Robyr">
+<meta property="og:title" content="politics &amp; data · Noah Robyr">
+<meta property="og:description" content="Interactive projects on political connections and electoral behaviour.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nor120oi.github.io/">
+<meta name="color-scheme" content="light">
+<style>
+  :root{
+    --paper:#f6f3eb; --ink:#111; --ink-2:#444; --ink-3:#6b675f; --rule:#111; --hair:#cfc9bb; --mark:#b3311e;
+    --serif: Charter, "Bitstream Charter", "Iowan Old Style", "Sitka Text", Cambria, Georgia, serif;
+    --mono: "SF Mono", ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  *{box-sizing:border-box}
+  html{background:var(--paper);color-scheme:light}
+  body{margin:0;background:var(--paper);color:var(--ink);font:400 18px/1.6 var(--serif);
+       -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .page{max-width:720px;margin:0 auto;padding-inline:clamp(20px,5vw,48px);padding-block:40px 56px}
 
-  <header style="border-top: 3px solid #111; padding-top: 18px;">
-    <p style="
-      margin: 0 0 28px;
-      font-family: 'SF Mono', Consolas, monospace;
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    ">
-      Political research · Interactive projects
-    </p>
+  a{color:var(--ink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+  a:hover{text-decoration-thickness:2px}
+  a:focus-visible{outline:2px solid var(--mark);outline-offset:3px}
 
-    <h1 style="
-      margin: 0;
-      padding: 0;
-      border: none;
-      color: #111;
-      font-family: inherit;
-      font-size: clamp(48px, 9vw, 84px);
-      font-weight: 400;
-      letter-spacing: -0.045em;
-      line-height: 0.95;
-    ">
-      politics &amp;<br>
-      data.
-    </h1>
+  .label{margin:0;font:400 11px/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
 
-    <p style="margin: 24px 0 28px; color: #444;">
-      Exploring political connections and electoral behaviour.
-    </p>
+  /* Masthead */
+  header{border-top:3px solid var(--rule);padding-top:18px}
+  header .label{margin-bottom:28px}
+  h1{margin:0;font-weight:400;font-size:clamp(48px,9vw,84px);letter-spacing:-.045em;line-height:.95}
+  .byline{margin:26px 0 0;font-size:20px}
+  .about{margin:10px 0 28px;color:var(--ink-2);max-width:58ch}
+  .contact{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0 0 28px;padding:0;list-style:none;font:400 13px/1.4 var(--mono)}
+
+  nav{display:flex;flex-wrap:wrap;gap:10px 18px;padding:14px 0;border-block:1px solid var(--rule);font:400 13px/1.4 var(--mono)}
+
+  /* Sections */
+  section{padding:36px 0;scroll-margin-top:16px}
+  section + section{border-top:1px solid var(--rule)}
+  h2{margin:0 0 22px;font:400 12px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+  h3{margin:0 0 14px;font-weight:400;font-size:29px;line-height:1.2;text-wrap:balance}
+  section p{margin:0 0 16px}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 22px;padding:0;list-style:none}
+  .tags li{font:400 11px/1 var(--mono);letter-spacing:.06em;padding:5px 7px;border:1px solid var(--hair);color:var(--ink-2)}
+
+  /* Contents list with dotted leaders, like a book index */
+  .toc{margin:8px 0 22px;padding:0;list-style:none;border-top:1px solid var(--hair)}
+  .toc li{border-bottom:1px solid var(--hair)}
+  .toc a{display:grid;grid-template-columns:auto 1fr auto;align-items:baseline;gap:10px;padding:13px 0;text-decoration:none}
+  .toc .t{font-size:19px}
+  .toc .dots{border-bottom:1px dotted var(--ink-3);transform:translateY(-5px);min-width:16px}
+  .toc .d{font:400 12.5px/1.3 var(--mono);color:var(--ink-3);text-align:right}
+  .toc .d::after{content:" →";color:var(--ink)}
+  .toc a:hover .t{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+  .toc a:hover .d::after{color:var(--mark)}
+
+  .note{margin:0;color:#555;font-size:15px;font-style:italic}
+  .finding{margin:0 0 16px;padding-left:16px;border-left:2px solid var(--mark)}
+
+  footer{border-top:3px solid var(--rule);padding-top:16px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;
+         font:400 11px/1.5 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+  footer a{color:var(--ink-2)}
+
+  @media (max-width:560px){
+    .toc a{grid-template-columns:1fr;gap:2px}
+    .toc .dots{display:none}
+    .toc .d{text-align:left}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <p class="label">Political research · Interactive projects</p>
+    <h1>politics &amp;<br>data.</h1>
+    <p class="byline">Noah Robyr</p>
+    <p class="about">MA student in political science at the University of Zurich. I work on electoral behaviour, political violence and the data behind political power, mostly with causal inference and panel data in R.</p>
+    <ul class="contact">
+      <li><a href="https://github.com/nor120oi">github</a></li>
+      <!-- <li><a href="mailto:you@example.com">email</a></li> -->
+      <!-- <li><a href="./cv.pdf">cv</a></li> -->
+    </ul>
   </header>
 
-  <nav aria-label="Projects" style="
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 18px;
-    padding: 14px 0;
-    border-top: 1px solid #111;
-    border-bottom: 1px solid #111;
-    font-family: 'SF Mono', Consolas, monospace;
-    font-size: 13px;
-  ">
-    <a href="#interests" style="color: #111; text-underline-offset: 4px;">
-      interest ties
-    </a>
+  <nav aria-label="Projects">
+    <a href="#interests">interest ties</a>
     <span aria-hidden="true">~</span>
-    <a href="#lpa" style="color: #111; text-underline-offset: 4px;">
-      lethal police actions
-    </a>
+    <a href="#lpa">lethal police actions</a>
   </nav>
 
-  <section id="interests" style="padding: 32px 0;">
-    <h2 style="
-      margin: 0 0 22px;
-      padding: 0;
-      border: none;
-      color: #444;
-      font-family: 'SF Mono', Consolas, monospace;
-      font-size: 12px;
-      font-weight: 400;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    ">
-      § 01 · Political connections
-    </h2>
-
-    <h3 style="
-      margin: 0 0 14px;
-      color: #111;
-      font-family: inherit;
-      font-size: 29px;
-      font-weight: 400;
-      line-height: 1.2;
-    ">
-      Interest ties in the Swiss National Council
-    </h3>
-
-    <p style="margin: 0 0 16px;">
-      An interactive map of the interest ties of members of the
-      Swiss National Council. Two versions draw on different sources:
-      Parliament’s official register and the more detailed data from
-      <a href="https://lobbywatch.ch/fr"
-         style="color: #111; text-underline-offset: 3px;">Lobbywatch</a>.
-    </p>
-
-    <p style="margin: 24px 0;">
-      <a href="./CN_lobbyWatch.html" style="
-        color: #111;
-        font-family: 'SF Mono', Consolas, monospace;
-        font-size: 14px;
-        text-decoration: underline;
-        text-underline-offset: 6px;
-      ">explore the Lobbywatch map →</a>
-    </p>
-
-    <p style="
-      margin: 0;
-      color: #555;
-      font-size: 15px;
-      font-style: italic;
-    ">
-      An interest tie alone does not establish influence over
-      political decisions.
-    </p>
+  <section id="interests">
+    <h2>§ 01 · Political connections</h2>
+    <h3>Interest ties in the Swiss National Council</h3>
+    <p>Who sits on which boards? An interactive map of the mandates and memberships declared by members of the Swiss National Council. Two versions draw on different sources: Parliament’s official register, and the more detailed data compiled by <a href="https://lobbywatch.ch/fr">Lobbywatch</a>.</p>
+    <ol class="toc">
+      <li><a href="./CN_parlement.html"><span class="t">Parliament register</span><span class="dots" aria-hidden="true"></span><span class="d">official declarations</span></a></li>
+      <li><a href="./CN_lobbyWatch.html"><span class="t">Lobbywatch</span><span class="dots" aria-hidden="true"></span><span class="d">more detailed ties</span></a></li>
+    </ol>
+    <p class="note">An interest tie alone does not establish influence over political decisions.</p>
   </section>
 
-  <section id="lpa" style="
-    padding: 32px 0;
-    border-top: 1px solid #111;
-  ">
-    <h2 style="
-      margin: 0 0 22px;
-      padding: 0;
-      border: none;
-      color: #444;
-      font-family: 'SF Mono', Consolas, monospace;
-      font-size: 12px;
-      font-weight: 400;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    ">
-      § 02 · Electoral behaviour
-    </h2>
-
-    <h3 style="
-      margin: 0 0 14px;
-      color: #111;
-      font-family: inherit;
-      font-size: 29px;
-      font-weight: 400;
-      line-height: 1.2;
-    ">
-      Lethal police actions
-    </h3>
-
-    <p style="margin: 24px 0 0;">
-      <a href="./lpa_window.html" style="
-        color: #111;
-        font-family: 'SF Mono', Consolas, monospace;
-        font-size: 14px;
-        text-decoration: underline;
-        text-underline-offset: 6px;
-      ">open the LPA project →</a>
-    </p>
-    <p style="margin: 20px 0 0;">
-  <a href="./lpa_ripple.html" style="
-    color: #111;
-    font-family: 'SF Mono', Consolas, monospace;
-    font-size: 14px;
-    text-decoration: underline;
-    text-underline-offset: 6px;
-  ">explore LPA ripples →</a>
-</p>
+  <section id="lpa">
+    <h2>§ 02 · Electoral behaviour</h2>
+    <h3>Lethal police actions and the vote in France</h3>
+    <p>Does a death at the hands of police change how a town votes? Using every lethal police action recorded in France between 1981 and 2022, I compare 841 urban communes before and after such an event with a two-way fixed-effects design.</p>
+    <p class="finding">Turnout rises by about 0.7 points in the following presidential or legislative election, and the combined left vote by about 1.4 points. Spillovers to neighbouring communes appear only around Paris.</p>
+    <ul class="tags" aria-label="Methods">
+      <li>staggered DiD</li><li>TWFE</li><li>event data</li><li>R</li>
+    </ul>
+    <ol class="toc">
+      <li><a href="./lpa_window.html"><span class="t">The 365-day window</span><span class="dots" aria-hidden="true"></span><span class="d">how treatment is defined</span></a></li>
+      <li><a href="./lpa_ripple.html"><span class="t">Where the ripple stops</span><span class="dots" aria-hidden="true"></span><span class="d">spillovers from Paris</span></a></li>
+    </ol>
+    <p class="note">BA thesis, University of Zurich, supervised by Prof. Lucas Leemann. Effects rest on rare events: 163 treated commune-elections.</p>
   </section>
 
-  <footer style="
-    border-top: 3px solid #111;
-    padding-top: 16px;
-    color: #444;
-    font-family: 'SF Mono', Consolas, monospace;
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  ">
-    Politics · Data · Visualisation
+  <footer>
+    <span>Politics · Data · Visualisation</span>
+    <span>© 2026 Noah Robyr</span>
   </footer>
 
 </div>
+</body>
+</html>
