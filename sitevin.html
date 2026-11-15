@@ -200,8 +200,8 @@
   #intro.done { display: none; }
   body.no-anim #stage, body.no-anim #spot { transition: none !important; }
   /* téléphone : la page occupe tout l'écran, y compris sous les barres du navigateur (hauteur posée en JS) */
-  body.narrow { position: fixed; top: 0; left: 0; right: 0; overflow: hidden; overscroll-behavior: none; touch-action: none; }
-  html:has(body.narrow) { height: 100%; overflow: hidden; overscroll-behavior: none; background: var(--paper); }
+  body.narrow { position: fixed; top: 0; left: 0; right: 0; overflow: hidden; overflow: clip; overscroll-behavior: none; touch-action: none; }
+  html:has(body.narrow) { height: 100%; overflow: hidden; overflow: clip; overscroll-behavior: none; background: var(--paper); }
   body.narrow #panel { touch-action: pan-y; overscroll-behavior: contain; }   /* seul le panneau des pages défile */
   body.narrow #lightbox { touch-action: pinch-zoom; }
   body.narrow #lang { top: max(14px, calc(env(safe-area-inset-top, 0px) + 6px)); }
@@ -514,7 +514,7 @@ const DATA = {"w": 1074, "h": 1464, "eyes": [{"e": [253, 273, 70, 19], "p": [269
     if (narrow) {
       // téléphone : hauteur du « grand » viewport, pour que le dessin passe sous les barres du navigateur ;
       // on zoome jusqu'à remplir cette hauteur, sans rogner plus que le raisin « Dégustation » à gauche ; pas de scroll
-      H = Math.max(vh, lvh.offsetHeight);
+      H = Math.min(Math.max(vh, lvh.offsetHeight), vh * 1.25);   // garde-fou si 100lvh est mal mesuré
       w = Math.min(H * VB_W / VB_H, vw * VB_W / 880); h = w * VB_H / VB_W;
       x = vw - w; y = Math.max(0, (H - h) * 0.4);
       document.getElementById('spot').style.setProperty('--H', H + 'px');
@@ -544,6 +544,7 @@ const DATA = {"w": 1074, "h": 1464, "eyes": [{"e": [253, 273, 70, 19], "p": [269
     dpr = Math.min(devicePixelRatio || 1, 2);
     const cw = Math.round(w * dpr), ch = Math.round(h * dpr);
     if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; }
+    if (narrow) { scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; }
   }
 
   // ---------- Raisins-menus ----------
@@ -646,7 +647,17 @@ const DATA = {"w": 1074, "h": 1464, "eyes": [{"e": [253, 273, 70, 19], "p": [269
     if ((top && dy > 0) || (end && dy < 0)) e.preventDefault();   // pas de défilement « à travers » le panneau
   }, { passive: false });
   addEventListener('gesturestart', e => { if (narrow) e.preventDefault(); });
-  addEventListener('scroll', () => { if (narrow && (scrollX || scrollY)) scrollTo(0, 0); });
+  // Safari peut restaurer une ancienne position de défilement (ancienne version du site) : on la remet toujours à zéro
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  const resetScroll = () => {
+    if (!narrow) return;
+    if (scrollX || scrollY) scrollTo(0, 0);
+    document.documentElement.scrollTop = 0; document.body.scrollTop = 0; document.body.scrollLeft = 0;
+  };
+  addEventListener('scroll', resetScroll, { passive: true });
+  document.body.addEventListener('scroll', resetScroll, { passive: true });
+  addEventListener('pageshow', () => { layout(); resetScroll(); });
+  addEventListener('touchend', resetScroll, { passive: true });
   addEventListener('load', layout);
   addEventListener('orientationchange', () => setTimeout(layout, 200));
   if (window.visualViewport) visualViewport.addEventListener('resize', layout);
