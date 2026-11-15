@@ -324,8 +324,7 @@
 
   <section class="page" id="p-histoire">
     <h1 data-i="hStory"></h1>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.</p>
-    <p>Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue.</p>
+    <div id="story" class="story"></div>
   </section>
 
   <section class="page" id="p-commande">
@@ -385,7 +384,7 @@ const T = {
     menu: "Menu", home: "Retour à l'accueil",
     hint: "choisissez un raisin", sulfites: "Contient des sulfites",
     navInfo: "Info", navTaste: "Dégustation", navStory: "Histoire", navOrder: "Commander",
-    hWine: "Fiche technique", hParcel: "La parcelle", hTaste: "Notes de dégustation", hStory: "Histoire", hOrder: "Commander",
+    hWine: "Fiche technique", hParcel: "La parcelle", hTaste: "Notes de dégustation", hStory: "Histoire de la cuvée", hOrder: "Commander",
     wine: [
       ["Nom", "Sous-la-Chapelle"], ["Cépage", "Pinot Noir"], ["Millésime", "2023"], ["Appellation", "A.O.C. Valais"],
       ["Format", "Uniquement en magnum (150 cl) — <b>CHF 80.–</b>"],
@@ -400,6 +399,7 @@ const T = {
       ["Sol", "Calcaire, limono-sableux et caillouteux, profond, sur graviers"]
     ],
     mapCap: "Carte viticole de Corin, Domaine Pierre Robyr — toucher pour agrandir",
+    story: ["En 2022, j'ai eu la chance de reprendre une parcelle singulière : un petit pan de vigne niché sous la chapelle de Corin. Il appartenait à un parent éloigné, qui l'avait vendu à la commune avant sa mort ; un parking doit un jour y être construit. Mon père et moi y donnions déjà quelques coups de main depuis des années. Quand j'ai appris le projet, j'ai demandé à la commune de pouvoir exploiter la vigne en attendant. Elle a accepté.", "Les ceps étaient énormes, signe de leur grand âge, et la première récolte, en 2022, décevante. L'année suivante, je les ai retaillés pour les rajeunir et j'ai limité la production au strict minimum : pas plus de 400 g par mètre carré. Pour remplir une barrique, j'ai complété avec une minuscule vigne de pinot louée au-dessus du village.", "Début septembre 2023, les raisins étaient magnifiques et parfaitement sains. Cette qualité m'a permis d'oser le raisin entier et une longue macération à froid. Dès la mise en barrique, le vin montrait une belle longueur et un fruit éclatant ; son acidité et ses tanins le rendaient encore austère, mais promettaient beaucoup.", "Trente-six mois plus tard, tout s'est fondu : un vin élégant et persistant, porté par des arômes de cerise. 130 magnums, d'une vigne qui ne sera peut-être bientôt plus."],
     soon: "Bientôt.",
     tasting: ["Robe", "Nez", "Bouche", "Accords", "Service", "Garde"],
     stock: (n, t) => `Encore ${n} magnums sur ${t}`,
@@ -422,7 +422,7 @@ const T = {
     menu: "Menü", home: "Zur Startseite",
     hint: "wählen Sie eine Traube", sulfites: "Enthält Sulfite",
     navInfo: "Info", navTaste: "Degustation", navStory: "Geschichte", navOrder: "Bestellen",
-    hWine: "Technische Daten", hParcel: "Die Parzelle", hTaste: "Degustationsnotizen", hStory: "Geschichte", hOrder: "Bestellen",
+    hWine: "Technische Daten", hParcel: "Die Parzelle", hTaste: "Degustationsnotizen", hStory: "Geschichte des Weins", hOrder: "Bestellen",
     wine: [
       ["Name", "Sous-la-Chapelle"], ["Rebsorte", "Pinot Noir"], ["Jahrgang", "2023"], ["Herkunft", "A.O.C. Valais"],
       ["Format", "Nur als Magnum (150 cl) — <b>CHF 80.–</b>"],
@@ -437,6 +437,7 @@ const T = {
       ["Boden", "Kalkhaltig, sandiger Lehm, steinig, tiefgründig, auf Kies"]
     ],
     mapCap: "Rebbaukarte von Corin, Domaine Pierre Robyr — antippen zum Vergrössern",
+    story: ["2022 bot sich mir die Gelegenheit, eine besondere Parzelle zu übernehmen: ein kleines Stück Reben direkt unterhalb der Kapelle von Corin. Es gehörte einem entfernten Verwandten, der es vor seinem Tod an die Gemeinde verkauft hatte; eines Tages soll dort ein Parkplatz entstehen. Mein Vater und ich halfen dort schon seit Jahren mit. Als ich vom Projekt erfuhr, fragte ich die Gemeinde, ob ich die Reben bis dahin bewirtschaften dürfe. Sie sagte ja.", "Die Rebstöcke waren riesig, ein Zeichen ihres hohen Alters, und die erste Ernte 2022 enttäuschend. Im Jahr darauf schnitt ich sie zurück, um sie zu verjüngen, und begrenzte den Ertrag aufs Äusserste: nicht mehr als 400 g pro Quadratmeter. Um eine Barrique zu füllen, ergänzte ich mit einem winzigen gepachteten Pinot-Rebberg oberhalb des Dorfes.", "Anfang September 2023 waren die Trauben prächtig und kerngesund. Diese Qualität erlaubte mir, ganze Trauben zu verarbeiten und lange kalt zu mazerieren. Schon im Fass zeigte der Wein eine schöne Länge und eine leuchtende Frucht; Säure und Tannine machten ihn noch streng, versprachen aber viel.", "Sechsunddreissig Monate später hat sich alles verbunden: ein eleganter, langer Wein mit Aromen von Kirsche. 130 Magnums aus einem Rebberg, den es vielleicht bald nicht mehr gibt."],
     soon: "Folgt bald.",
     tasting: ["Farbe", "Nase", "Gaumen", "Passt zu", "Servieren", "Lagerung"],
     stock: (n, t) => `Noch ${n} von ${t} Magnums`,
@@ -459,7 +460,7 @@ const T = {
     menu: "Menu", home: "Back to home",
     hint: "pick a grape", sulfites: "Contains sulphites",
     navInfo: "Info", navTaste: "Tasting", navStory: "Story", navOrder: "Order",
-    hWine: "Technical sheet", hParcel: "The vineyard", hTaste: "Tasting notes", hStory: "Story", hOrder: "Order",
+    hWine: "Technical sheet", hParcel: "The vineyard", hTaste: "Tasting notes", hStory: "The story of this wine", hOrder: "Order",
     wine: [
       ["Name", "Sous-la-Chapelle"], ["Grape", "Pinot Noir"], ["Vintage", "2023"], ["Appellation", "A.O.C. Valais"],
       ["Format", "Magnum only (150 cl) — <b>CHF 80.–</b>"],
@@ -474,6 +475,7 @@ const T = {
       ["Soil", "Limestone, sandy loam and stones, deep, over gravel"]
     ],
     mapCap: "Vineyard map of Corin, Domaine Pierre Robyr — tap to enlarge",
+    story: ["In 2022, I had the chance to take over a rather special plot: a small patch of vines nestled below the chapel of Corin. It belonged to a distant relative, who had sold it to the municipality before he died; a car park is due to be built there one day. My father and I had already been lending a hand there for years. When I heard about the project, I asked the municipality if I could farm the vines in the meantime. They agreed.", "The vines were enormous, a sign of their great age, and the first harvest, in 2022, was disappointing. The following year I cut them back to rejuvenate them and kept yields to a bare minimum: no more than 400 g per square metre. To fill a single barrel, I added grapes from a tiny rented Pinot plot above the village.", "In early September 2023 the grapes were magnificent and perfectly healthy. That quality let me work with whole grapes and a long cold maceration. Once in barrel, the wine already showed fine length and vibrant fruit; its acidity and tannins made it austere for now, but promised a great deal.", "Thirty-six months later, everything has come together: an elegant, persistent wine carried by aromas of cherry. 130 magnums, from a vineyard that may soon be gone."],
     soon: "Coming soon.",
     tasting: ["Colour", "Nose", "Palate", "Pairings", "Serving", "Ageing potential"],
     stock: (n, t) => `${n} of ${t} magnums left`,
@@ -543,7 +545,7 @@ const DATA = {"w": 1074, "h": 1464, "eyes": [{"e": [253, 273, 70, 19], "p": [269
       // centre du spot : sur l'étiquette à l'accueil, sur l'ensemble étiquette + texte sinon
       const R = document.getElementById('spot').style;     // zone éclairée = étiquette (+ texte sur les pages)
       R.setProperty('--l', x + 0.07 * w + 'px');           // bord gauche de l'ombre un peu dans le dessin
-      R.setProperty('--r', (home ? x + w : px + PANEL_W + 24) + 'px');
+      R.setProperty('--r', (home ? x + w : px + PANEL_W + 80) + 'px');
     } else { panel.style.left = panel.style.top = panel.style.width = panel.style.maxHeight = ''; }
     for (const a of grapes) {
       Object.assign(a.el.style, { left: a.x * k + 'px', top: a.y * k + 'px', width: 2 * a.r * k + 'px', height: 2 * a.r * k + 'px' });
@@ -601,6 +603,7 @@ const DATA = {"w": 1074, "h": 1464, "eyes": [{"e": [253, 273, 70, 19], "p": [269
     document.querySelectorAll('#lang button').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === l));
     $('specs-wine').innerHTML = rows(t.wine);
     $('specs-parcel').innerHTML = rows(t.parcel);
+    $('story').innerHTML = t.story.map(p => `<p>${p}</p>`).join('');
     $('tasting').innerHTML = t.tasting.map(x => `<div><span>${x}</span><span class="placeholder">—</span></div>`).join('');
     $('stock-txt').textContent = t.stock(CONFIG.stock, CONFIG.total);
     syncOrder();
