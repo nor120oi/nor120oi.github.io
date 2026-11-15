@@ -30,7 +30,7 @@
   /* ---------- Scène (dessin animé) ---------- */
   #stage { position: absolute; top: 0; left: 0; transition: left .8s cubic-bezier(.65,0,.25,1), top .8s cubic-bezier(.65,0,.25,1); }
   #stage canvas { -webkit-mask-image: linear-gradient(to right, transparent 0, #000 3%, #000 96%, transparent 100%); mask-image: linear-gradient(to right, transparent 0, #000 3%, #000 96%, transparent 100%); }
-  body.narrow #stage canvas { -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 96%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0, #000 96%, transparent 100%); }
+  body.narrow #stage canvas { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 7%, #000 93%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 7%, #000 93%, transparent 100%); }
   #stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   #hotspots { position: absolute; inset: 0; will-change: transform; }
 
@@ -147,7 +147,7 @@
   body.narrow #panel {
     position: fixed; left: 0; right: 0; bottom: 0; top: auto !important; width: auto !important;
     max-height: 78vh; overflow-y: auto; background: #fff;
-    padding: 1.4em 1.4em calc(2em + env(safe-area-inset-bottom, 0px)); border-radius: 18px 18px 0 0;
+    padding: 1.4em 1.4em 2em; border-radius: 18px 18px 0 0;
     box-shadow: 0 -10px 40px rgba(74, 26, 59, .14);
     transform: translateY(16px);
   }
@@ -199,18 +199,17 @@
   }
   #intro.done { display: none; }
   body.no-anim #stage, body.no-anim #spot { transition: none !important; }
-  /* téléphone : la page occupe tout l'écran, y compris sous les barres du navigateur (hauteur posée en JS) */
-  body.narrow { position: fixed; top: 0; left: 0; right: 0; overflow: hidden; overflow: clip; overscroll-behavior: none; touch-action: none; }
-  html:has(body.narrow) { height: 100%; overflow: hidden; overflow: clip; overscroll-behavior: none; background: var(--paper); }
-  body.narrow #panel { touch-action: pan-y; overscroll-behavior: contain; }   /* seul le panneau des pages défile */
-  body.narrow #lightbox { touch-action: pinch-zoom; }
+  body.narrow { position: fixed; inset: 0; overflow: hidden; overflow: clip; overscroll-behavior: none; touch-action: manipulation; height: 100% !important; }
+  /* téléphone : fond blanc sous les barres de Safari (pas de noir), page jamais défilable */
+  html:has(body.narrow) { overflow: hidden; overflow: clip; overscroll-behavior: none; background: var(--paper); }
+  body.narrow #panel { padding-bottom: calc(2em + env(safe-area-inset-bottom, 0px)); }
   body.narrow #lang { top: max(14px, calc(env(safe-area-inset-top, 0px) + 6px)); }
   @media (hover: none) { .grape .tag { opacity: 1; } }
   body.narrow #home .hint { color: var(--ink); }
   body.page-home #spot { --spot-w: 38vw; }
-  body.narrow #spot {             /* plus de bandes sombres en haut / en bas : le dessin continue sous les barres */
-    bottom: auto; height: var(--H, 100vh);
-    background: radial-gradient(ellipse 90vw 70% at 50% 50%, rgba(11,6,3,0) 78%, rgba(11,6,3,.18) 94%, rgba(11,6,3,.3) 100%);
+  body.narrow #spot {
+    background:
+      radial-gradient(ellipse 90vw 70% at 50% 50%, rgba(11,6,3,0) 78%, rgba(11,6,3,.15) 94%, rgba(11,6,3,.25) 100%);
   }
   #lang { z-index: 6; }
   #lang button { background: transparent; color: rgba(255,255,255,.6); }
@@ -500,9 +499,6 @@ const DATA = {"w": 1074, "h": 1464, "eyes": [{"e": [253, 273, 70, 19], "p": [269
   // ---------- Mise en page ----------
   let k = 0.5, dpr = 1, narrow = false;
   const PANEL_W = 560, GAP = 56, PAD = 32;
-  const lvh = document.createElement('div');            // sonde : hauteur de l'écran barres comprises (100lvh)
-  lvh.style.cssText = 'position:fixed;top:0;left:0;width:0;height:100vh;height:100lvh;visibility:hidden;pointer-events:none';
-  document.body.appendChild(lvh);
   function layout() {
     const vw = innerWidth, vh = innerHeight;
     let h = Math.min(vh, (vw - PANEL_W - GAP - 2 * PAD) * VB_H / VB_W);
@@ -510,14 +506,12 @@ const DATA = {"w": 1074, "h": 1464, "eyes": [{"e": [253, 273, 70, 19], "p": [269
     document.body.classList.toggle('narrow', narrow);
     const home = document.body.classList.contains('page-home');
     let w, x, y;
-    let H = vh;
     if (narrow) {
-      // téléphone : hauteur du « grand » viewport, pour que le dessin passe sous les barres du navigateur ;
-      // on zoome jusqu'à remplir cette hauteur, sans rogner plus que le raisin « Dégustation » à gauche ; pas de scroll
-      H = Math.min(Math.max(vh, lvh.offsetHeight), vh * 1.25);   // garde-fou si 100lvh est mal mesuré
-      w = Math.min(H * VB_W / VB_H, vw * VB_W / 880); h = w * VB_H / VB_W;
-      x = vw - w; y = Math.max(0, (H - h) * 0.4);
-      document.getElementById('spot').style.setProperty('--H', H + 'px');
+      // téléphone : on zoome un peu et on rogne la gauche de la vigne pour garder le texte ; pas de scroll
+      w = Math.min(vw * 1.25, vh * VB_W / VB_H); h = w * VB_H / VB_W;
+      x = vw - w; y = Math.max(0, (vh - h) * 0.42);
+      const S = document.getElementById('spot').style;
+      S.setProperty('--t', y + 'px'); S.setProperty('--b', y + h + 'px');
     }
     else {
       w = h * VB_W / VB_H; y = (vh - h) / 2;
@@ -526,10 +520,10 @@ const DATA = {"w": 1074, "h": 1464, "eyes": [{"e": [253, 273, 70, 19], "p": [269
     k = w / VB_W;
     const I = document.getElementById('intro').style;      // centre de l'ouverture = centre du dessin visible
     I.setProperty('--ix', Math.max(0, x) / 2 + Math.min(vw, x + w) / 2 + 'px');
-    I.setProperty('--iy', Math.max(0, y) / 2 + Math.min(H, y + h) / 2 + 'px');
+    I.setProperty('--iy', Math.max(0, y) / 2 + Math.min(vh, y + h) / 2 + 'px');
     Object.assign(stage.style, { left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px' });
     document.documentElement.style.setProperty('--k', k + 'px');
-    document.body.style.height = H + 'px';
+    document.body.style.height = vh + 'px';
     if (!narrow) {
       const px = Math.max(PAD, (vw - w - GAP - PANEL_W) / 2) + w + GAP;
       Object.assign(panel.style, { left: px + 'px', top: 0.08 * vh + 'px', width: PANEL_W + 'px', maxHeight: 0.84 * vh + 'px' });
@@ -634,20 +628,7 @@ const DATA = {"w": 1074, "h": 1464, "eyes": [{"e": [253, 273, 70, 19], "p": [269
   const load = src => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = src; });
   applyLang(lang); route();
   addEventListener('resize', layout);
-  // téléphone : la page reste fixée sur le dessin (ni défilement, ni rebond, ni zoom), sauf dans le panneau des pages
-  let ty = 0;
-  addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, { passive: true });
-  addEventListener('touchmove', e => {
-    if (!narrow) return;
-    if (e.touches.length > 1) { e.preventDefault(); return; }
-    const inPanel = e.target.closest && e.target.closest('#panel');
-    if (!inPanel) { e.preventDefault(); return; }
-    const dy = e.touches[0].clientY - ty, top = panel.scrollTop <= 0,
-          end = panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 1;
-    if ((top && dy > 0) || (end && dy < 0)) e.preventDefault();   // pas de défilement « à travers » le panneau
-  }, { passive: false });
-  addEventListener('gesturestart', e => { if (narrow) e.preventDefault(); });
-  // Safari peut restaurer une ancienne position de défilement (ancienne version du site) : on la remet toujours à zéro
+  // Safari peut restaurer une ancienne position de défilement : on la remet toujours à zéro sur téléphone
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   const resetScroll = () => {
     if (!narrow) return;
