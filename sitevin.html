@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff" media="(max-width: 719px)">
 <title>Sous-la-Chapelle · Pinot Noir 2023 · Noah Robyr</title>
 <meta name="description" content="Sous-la-Chapelle, Pinot Noir 2023 de Noah Robyr, Corin-sur-Sierre (A.O.C. Valais). Micro-production de 130 magnums.">
@@ -24,6 +24,7 @@
     --k: 0.5px;              /* px écran par unité d'étiquette (1300 de large) — mis à jour en JS */
   }
   * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   html, body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--serif); }
   body { min-height: 100vh; overflow-x: hidden; }
   a { color: inherit; }
@@ -45,6 +46,14 @@
     transition: opacity .25s, transform .25s;
   }
   .grape:hover::after, .grape:focus-visible::after { opacity: .55; transform: scale(1); }
+  /* petit signe de temps en temps pour montrer qu'on peut toucher les raisins-menus */
+  .grape::before { content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none; opacity: 0; }
+  .grape.nudge::before { animation: nudge 1.4s ease-out; }
+  @keyframes nudge {
+    0%   { opacity: 0; box-shadow: 0 0 0 0 rgba(255,255,255,0), 0 0 0 0 rgba(163,33,79,0); }
+    15%  { opacity: 1; box-shadow: 0 0 18px 6px rgba(255,255,255,.75), 0 0 0 2px rgba(163,33,79,.45); }
+    100% { opacity: 0; box-shadow: 0 0 30px 18px rgba(255,255,255,0), 0 0 0 14px rgba(163,33,79,0); }
+  }
   .grape .tag {
     position: absolute; white-space: nowrap; pointer-events: none;
     background: rgba(255,255,255,.86); padding: .02em .32em .08em; border-radius: 999px;
@@ -201,14 +210,14 @@
   #intro.done { display: none; }
   body.no-anim #stage, body.no-anim #spot { transition: none !important; }
   @media (max-width: 719px), (max-aspect-ratio: 19/20) { html { background: var(--paper); } }
-  body.narrow { position: fixed; inset: 0; overflow: hidden; overflow: clip; overscroll-behavior: none; touch-action: none; height: 100% !important; }
-  body.narrow #panel { touch-action: pan-y; overscroll-behavior: contain; }
+  body.narrow { position: fixed; inset: 0; overflow: hidden; overflow: clip; overscroll-behavior: none; touch-action: manipulation; height: 100% !important; }
+  body.narrow #panel { touch-action: pan-y; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; font-size: 17px; }
+  body.narrow #panel input, body.narrow #panel textarea { font-size: 16px; }   /* évite le zoom automatique de Safari sur les champs */
   body.narrow #lightbox { touch-action: pinch-zoom; }
   /* téléphone : fond blanc sous les barres de Safari (pas de noir), page jamais défilable */
   html:has(body.narrow) { overflow: hidden; overflow: clip; overscroll-behavior: none; background: var(--paper); }
   body.narrow #panel { padding-bottom: calc(2em + env(safe-area-inset-bottom, 0px)); }
   body.narrow #lang { top: max(14px, calc(env(safe-area-inset-top, 0px) + 6px)); }
-  @media (hover: none) { .grape .tag { opacity: 1; } }
   body.narrow #home .hint { color: var(--ink); }
   body.page-home #spot { --spot-w: 38vw; }
   body.narrow #spot {
@@ -730,7 +739,11 @@ const DATA = {"w": 1074, "h": 1464, "eyes": [{"e": [253, 273, 70, 19], "p": [269
 
       for (const e of eyes) {
         let tx, ty;
-        if (hovered && e.owner === hovered) { tx = 0; ty = 0; }            // le raisin survolé vous regarde
+        const nd = e.owner && e.owner.nudgeT ? t - e.owner.nudgeT : 1e9;
+        if (nd < 1100) {                                                   // signe : les yeux font un rapide « coucou » gauche-droite
+          tx = Math.sin(nd / 85) * e.max; ty = -0.3 * e.max;
+        }
+        else if (hovered && e.owner === hovered) { tx = 0; ty = 0; }       // le raisin survolé vous regarde
         else if (look) {
           const dx = look.x - e.cx, dy = look.y - e.cy, d = Math.hypot(dx, dy) || 1;
           const reach = Math.min(1, d / 120);
@@ -754,6 +767,16 @@ const DATA = {"w": 1074, "h": 1464, "eyes": [{"e": [253, 273, 70, 19], "p": [269
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
+    // toutes les 4 à 6 s, un raisin-menu au hasard fait signe (halo + yeux), seulement sur l'accueil
+    let lastG = null;
+    (function nudge() {
+      if (document.body.classList.contains('page-home') && intro.classList.contains('done') && !hovered) {
+        let g; do { g = grapes[Math.floor(Math.random() * grapes.length)]; } while (g === lastG && grapes.length > 1);
+        lastG = g; g.nudgeT = performance.now();
+        g.el.classList.remove('nudge'); void g.el.offsetWidth; g.el.classList.add('nudge');
+      }
+      setTimeout(nudge, 4000 + Math.random() * 2000);
+    })();
     setTimeout(openLight, 600);                          // un court temps dans le noir avant que la lumière s'allume
     requestAnimationFrame(() => document.body.classList.remove('no-anim'));
   });
