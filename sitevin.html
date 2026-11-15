@@ -186,6 +186,16 @@
         rgba(11,6,3,0) 72%, rgba(11,6,3,.55) 86%, rgba(11,6,3,.92) 96%, #0b0603 100%);
   }
   html { background: #0b0603; }
+  /* ---------- Ouverture : la lumière grandit depuis le centre ---------- */
+  @property --ir { syntax: '<length>'; inherits: false; initial-value: 0px; }
+  #intro {
+    position: fixed; inset: 0; z-index: 8; pointer-events: none;
+    background: radial-gradient(circle var(--ir) at var(--ix, 50vw) var(--iy, 50vh),
+      rgba(11,6,3,0) 0%, rgba(11,6,3,0) 45%, rgba(11,6,3,.85) 80%, #0b0603 100%);
+    transition: --ir 2.6s cubic-bezier(.25,.1,.2,1);
+  }
+  #intro.done { display: none; }
+  body.no-anim #stage, body.no-anim #spot { transition: none !important; }
   body.narrow { position: fixed; inset: 0; overflow: hidden; overscroll-behavior: none; touch-action: manipulation; height: 100% !important; }
   html:has(body.narrow) { overflow: hidden; overscroll-behavior: none; }
   @media (hover: none) { .grape .tag { opacity: 1; } }
@@ -223,8 +233,9 @@
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>
 </head>
-<body class="page-home">
+<body class="page-home no-anim">
 
+<div id="intro" aria-hidden="true"></div>
 <div id="spot" aria-hidden="true"></div>
 <div id="lang" role="group" aria-label="Langue / Sprache / Language">
   <button data-lang="fr">FR</button><button data-lang="de">DE</button><button data-lang="en">EN</button>
@@ -503,6 +514,9 @@ const DATA = {"w": 1074, "h": 1464, "eyes": [{"e": [253, 273, 70, 19], "p": [269
       x = home ? (vw - w) / 2 : Math.max(PAD, (vw - w - GAP - PANEL_W) / 2);
     }
     k = w / VB_W;
+    const I = document.getElementById('intro').style;      // centre de l'ouverture = centre du dessin visible
+    I.setProperty('--ix', Math.max(0, x) / 2 + Math.min(vw, x + w) / 2 + 'px');
+    I.setProperty('--iy', Math.max(0, y) / 2 + Math.min(vh, y + h) / 2 + 'px');
     Object.assign(stage.style, { left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px' });
     document.documentElement.style.setProperty('--k', k + 'px');
     document.body.style.height = vh + 'px';
@@ -614,6 +628,15 @@ const DATA = {"w": 1074, "h": 1464, "eyes": [{"e": [253, 273, 70, 19], "p": [269
   if (window.visualViewport) visualViewport.addEventListener('resize', layout);
   setTimeout(layout, 300);
 
+  // centre de l'ouverture = centre du dessin
+  const intro = document.getElementById('intro');
+  function openLight() {
+    if (reduceMotion) { intro.classList.add('done'); return; }
+    intro.addEventListener('transitionend', () => intro.classList.add('done'), { once: true });
+    setTimeout(() => intro.classList.add('done'), 4000);   // sécurité
+    requestAnimationFrame(() => requestAnimationFrame(() =>
+      intro.style.setProperty('--ir', Math.hypot(innerWidth, innerHeight) * 1.25 + 'px')));
+  }
   Promise.all(['vine', 'grapes', 'irises', 'mask'].map(n => load(DATA.assets[n]))).then(([vine, grapesImg, irises, mask]) => {
     const eyes = DATA.eyes.map((d, i) => {
       const [ex, ey, ew, eh] = d.e, [px, py, pw, ph] = d.p;
@@ -694,6 +717,8 @@ const DATA = {"w": 1074, "h": 1464, "eyes": [{"e": [253, 273, 70, 19], "p": [269
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
+    setTimeout(openLight, 150);
+    requestAnimationFrame(() => document.body.classList.remove('no-anim'));
   });
 })();
 </script>
