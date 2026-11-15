@@ -190,9 +190,12 @@
   @property --ir { syntax: '<length>'; inherits: false; initial-value: 0px; }
   #intro {
     position: fixed; inset: 0; z-index: 8; pointer-events: none;
-    background: radial-gradient(circle var(--ir) at var(--ix, 50vw) var(--iy, 50vh),
+    background: #0b0603;                                   /* noir complet tant que tout n'est pas prêt */
+    transition: --ir 2.8s cubic-bezier(.6,0,.35,1);
+  }
+  #intro.opening {
+    background: radial-gradient(circle max(var(--ir), 1px) at var(--ix, 50vw) var(--iy, 50vh),
       rgba(11,6,3,0) 0%, rgba(11,6,3,0) 45%, rgba(11,6,3,.85) 80%, #0b0603 100%);
-    transition: --ir 2.6s cubic-bezier(.25,.1,.2,1);
   }
   #intro.done { display: none; }
   body.no-anim #stage, body.no-anim #spot { transition: none !important; }
@@ -234,8 +237,8 @@
 </style>
 </head>
 <body class="page-home no-anim">
+<div id="intro" aria-hidden="true" style="position:fixed;inset:0;z-index:8;background:#0b0603"></div>
 
-<div id="intro" aria-hidden="true"></div>
 <div id="spot" aria-hidden="true"></div>
 <div id="lang" role="group" aria-label="Langue / Sprache / Language">
   <button data-lang="fr">FR</button><button data-lang="de">DE</button><button data-lang="en">EN</button>
@@ -632,10 +635,18 @@ const DATA = {"w": 1074, "h": 1464, "eyes": [{"e": [253, 273, 70, 19], "p": [269
   const intro = document.getElementById('intro');
   function openLight() {
     if (reduceMotion) { intro.classList.add('done'); return; }
-    intro.addEventListener('transitionend', () => intro.classList.add('done'), { once: true });
-    setTimeout(() => intro.classList.add('done'), 4000);   // sécurité
-    requestAnimationFrame(() => requestAnimationFrame(() =>
-      intro.style.setProperty('--ir', Math.hypot(innerWidth, innerHeight) * 1.25 + 'px')));
+    intro.style.background = '';                         // on passe du noir plein au dégradé (rayon 0 = encore noir)
+    intro.classList.add('opening');
+    // 1) la lumière grandit jusqu'à couvrir le dessin (3 s), 2) puis s'ouvre au reste en 0,8 s
+    const r = stage.getBoundingClientRect();
+    const vis = Math.hypot(Math.min(innerWidth, r.right) - Math.max(0, r.left), Math.min(innerHeight, r.bottom) - Math.max(0, r.top)) / 2;
+    intro.addEventListener('transitionend', () => {
+      intro.style.transition = '--ir .6s ease-in';
+      intro.style.setProperty('--ir', Math.hypot(innerWidth, innerHeight) * 1.3 + 'px');
+      intro.addEventListener('transitionend', () => intro.classList.add('done'), { once: true });
+    }, { once: true });
+    setTimeout(() => intro.classList.add('done'), 7000);   // sécurité
+    requestAnimationFrame(() => requestAnimationFrame(() => intro.style.setProperty('--ir', vis / 0.5 + 'px')));
   }
   Promise.all(['vine', 'grapes', 'irises', 'mask'].map(n => load(DATA.assets[n]))).then(([vine, grapesImg, irises, mask]) => {
     const eyes = DATA.eyes.map((d, i) => {
@@ -717,7 +728,7 @@ const DATA = {"w": 1074, "h": 1464, "eyes": [{"e": [253, 273, 70, 19], "p": [269
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
-    setTimeout(openLight, 150);
+    setTimeout(openLight, 600);                          // un court temps dans le noir avant que la lumière s'allume
     requestAnimationFrame(() => document.body.classList.remove('no-anim'));
   });
 })();
