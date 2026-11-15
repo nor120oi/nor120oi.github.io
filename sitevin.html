@@ -200,8 +200,10 @@
   #intro.done { display: none; }
   body.no-anim #stage, body.no-anim #spot { transition: none !important; }
   /* téléphone : la page occupe tout l'écran, y compris sous les barres du navigateur (hauteur posée en JS) */
-  body.narrow { position: fixed; top: 0; left: 0; right: 0; overflow: hidden; overscroll-behavior: none; touch-action: manipulation; }
-  html:has(body.narrow) { overflow: hidden; overscroll-behavior: none; background: var(--paper); }
+  body.narrow { position: fixed; top: 0; left: 0; right: 0; overflow: hidden; overscroll-behavior: none; touch-action: none; }
+  html:has(body.narrow) { height: 100%; overflow: hidden; overscroll-behavior: none; background: var(--paper); }
+  body.narrow #panel { touch-action: pan-y; overscroll-behavior: contain; }   /* seul le panneau des pages défile */
+  body.narrow #lightbox { touch-action: pinch-zoom; }
   body.narrow #lang { top: max(14px, calc(env(safe-area-inset-top, 0px) + 6px)); }
   @media (hover: none) { .grape .tag { opacity: 1; } }
   body.narrow #home .hint { color: var(--ink); }
@@ -631,6 +633,20 @@ const DATA = {"w": 1074, "h": 1464, "eyes": [{"e": [253, 273, 70, 19], "p": [269
   const load = src => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = src; });
   applyLang(lang); route();
   addEventListener('resize', layout);
+  // téléphone : la page reste fixée sur le dessin (ni défilement, ni rebond, ni zoom), sauf dans le panneau des pages
+  let ty = 0;
+  addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, { passive: true });
+  addEventListener('touchmove', e => {
+    if (!narrow) return;
+    if (e.touches.length > 1) { e.preventDefault(); return; }
+    const inPanel = e.target.closest && e.target.closest('#panel');
+    if (!inPanel) { e.preventDefault(); return; }
+    const dy = e.touches[0].clientY - ty, top = panel.scrollTop <= 0,
+          end = panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 1;
+    if ((top && dy > 0) || (end && dy < 0)) e.preventDefault();   // pas de défilement « à travers » le panneau
+  }, { passive: false });
+  addEventListener('gesturestart', e => { if (narrow) e.preventDefault(); });
+  addEventListener('scroll', () => { if (narrow && (scrollX || scrollY)) scrollTo(0, 0); });
   addEventListener('load', layout);
   addEventListener('orientationchange', () => setTimeout(layout, 200));
   if (window.visualViewport) visualViewport.addEventListener('resize', layout);
