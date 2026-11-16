@@ -128,6 +128,20 @@
   /* sur ordi, l'indice, les mentions et les pastilles passent dans la zone sombre */
   body:not(.narrow) #home .hint, body:not(.narrow) #home .legal, body:not(.narrow) .grape .tag { display: none; }
 
+  /* ---------- Mentions légales (lien discret) ---------- */
+  #side .ml { display: inline-block; margin-top: 1.1em; font-size: 14px; letter-spacing: .06em; color: var(--cream-soft); opacity: .75; pointer-events: auto; text-underline-offset: 3px; }
+  #side .ml:hover { opacity: 1; color: var(--cream); }
+  #mlink { display: none; position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 5;
+           padding: 10px 14px; font-size: 13px; letter-spacing: .05em; color: var(--ink-soft); text-decoration: none; opacity: 0; }
+  body.narrow.page-home #mlink { display: block; }
+  body.narrow.ecrit #mlink { opacity: .8; transition: opacity 1.6s ease 2.9s; }
+  #textnav a.discret { opacity: .7; font-size: .9em; }
+  .legaltxt { font-size: .95em; }
+  .legaltxt h2 { font-size: 1em; font-weight: 600; margin: 1.4em 0 .25em; }
+  .legaltxt h2:first-child { margin-top: 0; }
+  .legaltxt p { margin: 0 0 .5em; }
+  .legaltxt .ph { font-style: italic; color: var(--accent); }
+
   /* ---------- Panneau des pages ---------- */
   #panel {
     position: absolute; z-index: 2; opacity: 0; visibility: hidden; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(122,84,112,.35) transparent;
@@ -139,6 +153,11 @@
   #panel header a.back {
     font-family: var(--script); font-size: 2.6em; line-height: 1.35; text-decoration: none; display: inline-block;   /* place pour la boucle du C */
   }
+  #panel header .hrow { display: flex; align-items: center; gap: .35em; margin-left: -.55em; }
+  #panel header .back-arrow { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; color: var(--aub); border-radius: 50%; transition: transform .25s, background .25s; }
+  #panel header .back-arrow:hover, #panel header .back-arrow:focus-visible { transform: translateX(-4px); background: rgba(29,11,25,.06); outline: none; }
+  body.narrow #panel header .back-arrow { display: none; }
+  body.narrow #panel header .hrow { margin-left: 0; }
   #panel header .sub { font-size: .95em; color: var(--ink-soft); letter-spacing: .02em; }
   #panel h1 {
     font-weight: 500; font-size: 1.05em; letter-spacing: .18em; text-transform: uppercase;
@@ -215,7 +234,7 @@
   }
   body.narrow:not(.page-home) #panel { transform: none; transition: opacity .8s 1s, transform 1.1s 1s; }
   body.narrow #panel .cta { color: var(--aub); }
-  body.narrow #panel .close { display: block; background: transparent; color: var(--ink); }
+  body.narrow #panel .close { display: block; position: sticky; top: .3em; z-index: 3; background: var(--aub); color: var(--ink); }   /* au-dessus du texte qui défile (sinon le texte capte le toucher) */
   #panel .close {
     display: none; position: sticky; top: 0; margin-left: auto; width: 2.2em; height: 2.2em;
     border-radius: 50%; border: 1px solid var(--line); background: #fff; color: var(--ink);
@@ -284,6 +303,7 @@
   body.narrow #panel { z-index: 7; }
   body.narrow:not(.page-home) #lang button { background: transparent; color: var(--cream-soft); transition: color .6s .8s; }
   body.narrow:not(.page-home) #lang button[aria-pressed=true] { color: var(--cream); }
+  body.narrow:not(.page-home) #lang { z-index: 8; background: var(--aub); border-radius: 999px; }   /* au-dessus du texte qui défile, et cliquable */
   figure.map { margin: 1.4em 0 0; }
   .map-btn { position: relative; display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; border-radius: 10px; overflow: hidden; }
   .map-btn img { display: block; width: 100%; height: auto; }
@@ -319,7 +339,7 @@
     <div class="rest"><svg width="34" height="14" viewBox="0 0 34 14" fill="none" aria-hidden="true"><path d="M33 7H2M7 1L1 7l6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i="hint"></span></div>
     <div class="ap" aria-live="polite"><div class="ap-t" id="ap-t"></div><div class="ap-l" id="ap-l"></div><div class="ap-a" id="ap-a"></div></div>
   </div>
-  <div class="legal">Pierre Robyr | Vigneron-Encaveur<br>A.O.C. Valais | 13,4 % vol.<br><span data-i="sulfites"></span></div>
+  <div class="legal">Pierre Robyr | Vigneron-Encaveur<br>A.O.C. Valais | 13,4 % vol.<br><span data-i="sulfites"></span><br><a class="ml" href="#mentions" data-i="navLegal"></a></div>
 </aside>
 <div id="lang" role="group" aria-label="Langue / Sprache / Language">
   <button data-lang="fr">FR</button><button data-lang="de">DE</button><button data-lang="en">EN</button>
@@ -365,7 +385,10 @@
 <main id="panel" aria-live="polite">
   <a class="close" href="#" data-i-aria="home">✕</a>
   <header>
-    <a class="back" href="#">Sous-la-Chapelle</a>
+    <div class="hrow">
+      <a class="back-arrow" href="#" data-i-aria="home"><svg width="34" height="18" viewBox="0 0 34 18" fill="none" aria-hidden="true"><path d="M33 9H3M10 2L2 9l8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <a class="back" href="#">Sous-la-Chapelle</a>
+    </div>
     <div class="sub">Pinot Noir · 2023 · Noah Robyr</div>
   </header>
 
@@ -429,10 +452,16 @@
     </form>
   </section>
 
+  <section class="page" id="p-mentions">
+    <h1 data-i="navLegal"></h1>
+    <div id="legal-txt" class="legaltxt"></div>
+  </section>
+
   <nav id="textnav">
-    <a href="#info" data-i="navInfo"></a><a href="#degustation" data-i="navTaste"></a><a href="#histoire" data-i="navStory"></a><a href="#commande" data-i="navOrder"></a>
+    <a href="#info" data-i="navInfo"></a><a href="#degustation" data-i="navTaste"></a><a href="#histoire" data-i="navStory"></a><a href="#commande" data-i="navOrder"></a><a href="#mentions" data-i="navLegal" class="discret"></a>
   </nav>
 </main>
+<a id="mlink" href="#mentions" data-i="navLegal"></a>
 
 <script>
 /* ====== À RÉGLER ====== */
@@ -450,6 +479,8 @@ const T = {
     canvasAlt: "Vigne au crayon de couleur, avec des raisins dont les yeux suivent le pointeur",
     menu: "Menu", home: "Retour à l'accueil",
     hint: "choisissez un raisin", sulfites: "Contient des sulfites",
+    navLegal: "Mentions légales",
+    legal: "<h2>Éditeur et vendeur</h2><p>Noah Robyr<br><span class=\"ph\">[adresse postale]</span><br>E-mail : <a href=\"mailto:noahrobyr@gmail.com\">noahrobyr@gmail.com</a></p><h2>Le vin</h2><p>Sous-la-Chapelle, Pinot Noir 2023, A.O.C. Valais, 13,4 % vol., magnum 150 cl. Contient des sulfites. Mention de l'étiquette : Pierre Robyr, Vigneron-Encaveur, Corin-sur-Sierre.</p><h2>Prix, commande et retrait</h2><p>Prix en francs suisses (CHF), <span class=\"ph\">[TVA comprise / non soumis à la TVA]</span>. La commande se fait par e-mail ; elle devient ferme lorsque je la confirme par retour d'e-mail, dans la limite des magnums disponibles. Paiement au retrait, à la cave à Corin-sur-Sierre ; toute autre remise se fait sur entente.</p><h2>Protection de la jeunesse</h2><p>La loi suisse interdit de remettre du vin aux personnes de moins de 16 ans. Une pièce d'identité peut être demandée au retrait.</p><h2>Protection des données</h2><p>Ce site ne dépose aucun cookie, ne mesure pas les visites et n'envoie aucun formulaire à un serveur ; seul votre choix de langue est enregistré dans votre propre navigateur. Quand vous commandez, votre messagerie m'envoie un e-mail avec votre nom, votre adresse et votre message : je les utilise uniquement pour traiter la commande et ne les transmets à personne. Ma messagerie est fournie par Google (Gmail). Le site est hébergé par <span class=\"ph\">[hébergeur, p. ex. GitHub Pages, GitHub Inc., États-Unis]</span>, qui peut enregistrer l'adresse IP des visiteurs pour des raisons techniques et de sécurité. Vous pouvez à tout moment me demander quelles données je détiens sur vous, les faire corriger ou supprimer (loi fédérale sur la protection des données, LPD).</p><h2>Droits</h2><p>Dessins et textes : © Noah Robyr. Carte viticole : Domaine Pierre Robyr. Polices : Cormorant Garamond (Christian Thalmann) et Mrs Saint Delafield (Alejandro Paul, version modifiée « SLC Script »), sous licence SIL Open Font License 1.1.</p>",
     stockH: "Magnums disponibles", open: "cliquer pour ouvrir",
     prev: {
       info: "Fiche technique et parcelle : Corin de la Crête, 667 m, plein sud.",
@@ -495,6 +526,8 @@ const T = {
     canvasAlt: "Rebe in Farbstift, mit Trauben, deren Augen dem Mauszeiger folgen",
     menu: "Menü", home: "Zur Startseite",
     hint: "wählen Sie eine Traube", sulfites: "Enthält Sulfite",
+    navLegal: "Impressum",
+    legal: "<h2>Herausgeber und Verkäufer</h2><p>Noah Robyr<br><span class=\"ph\">[Postadresse]</span><br>E-Mail: <a href=\"mailto:noahrobyr@gmail.com\">noahrobyr@gmail.com</a></p><h2>Der Wein</h2><p>Sous-la-Chapelle, Pinot Noir 2023, A.O.C. Valais, 13,4 % vol., Magnum 150 cl. Enthält Sulfite. Angabe auf der Etikette: Pierre Robyr, Vigneron-Encaveur, Corin-sur-Sierre.</p><h2>Preise, Bestellung und Abholung</h2><p>Preise in Schweizer Franken (CHF), <span class=\"ph\">[inkl. MWST / nicht MWST-pflichtig]</span>. Bestellt wird per E-Mail; die Bestellung ist verbindlich, sobald ich sie per E-Mail bestätige, solange Magnums verfügbar sind. Bezahlung bei der Abholung im Keller in Corin-sur-Sierre; eine andere Übergabe nach Absprache.</p><h2>Jugendschutz</h2><p>Nach Schweizer Recht darf Wein nicht an Personen unter 16 Jahren abgegeben werden. Bei der Abholung kann ein Ausweis verlangt werden.</p><h2>Datenschutz</h2><p>Diese Seite setzt keine Cookies, misst keine Besuche und sendet kein Formular an einen Server; nur Ihre Sprachwahl wird in Ihrem eigenen Browser gespeichert. Wenn Sie bestellen, sendet mir Ihr Mailprogramm eine E-Mail mit Ihrem Namen, Ihrer Adresse und Ihrer Nachricht: Ich verwende diese Angaben ausschliesslich zur Abwicklung der Bestellung und gebe sie nicht weiter. Mein E-Mail-Dienst ist Google (Gmail). Die Seite wird gehostet von <span class=\"ph\">[Hoster, z. B. GitHub Pages, GitHub Inc., USA]</span>, der die IP-Adresse der Besuchenden aus technischen und Sicherheitsgründen protokollieren kann. Sie können jederzeit Auskunft über Ihre Daten verlangen und sie berichtigen oder löschen lassen (Bundesgesetz über den Datenschutz, DSG).</p><h2>Rechte</h2><p>Zeichnungen und Texte: © Noah Robyr. Rebbaukarte: Domaine Pierre Robyr. Schriften: Cormorant Garamond (Christian Thalmann) und Mrs Saint Delafield (Alejandro Paul, angepasste Version «SLC Script»), unter der SIL Open Font License 1.1.</p>",
     stockH: "Verfügbare Magnums", open: "zum Öffnen klicken",
     prev: {
       info: "Technische Daten und Parzelle: Corin de la Crête, 667 m, reine Südlage.",
@@ -540,6 +573,8 @@ const T = {
     canvasAlt: "Coloured-pencil vine with grapes whose eyes follow the pointer",
     menu: "Menu", home: "Back to home",
     hint: "pick a grape", sulfites: "Contains sulphites",
+    navLegal: "Legal notice",
+    legal: "<h2>Publisher and seller</h2><p>Noah Robyr<br><span class=\"ph\">[postal address]</span><br>E-mail: <a href=\"mailto:noahrobyr@gmail.com\">noahrobyr@gmail.com</a></p><h2>The wine</h2><p>Sous-la-Chapelle, Pinot Noir 2023, A.O.C. Valais, 13.4% vol., magnum 150 cl. Contains sulphites. As stated on the label: Pierre Robyr, Vigneron-Encaveur, Corin-sur-Sierre.</p><h2>Prices, orders and pick-up</h2><p>Prices in Swiss francs (CHF), <span class=\"ph\">[VAT included / not subject to VAT]</span>. Orders are placed by e-mail and become binding once I confirm them by e-mail, while magnums last. Payment on pick-up at the cellar in Corin-sur-Sierre; any other hand-over by arrangement.</p><h2>Protection of minors</h2><p>Swiss law prohibits supplying wine to anyone under 16. ID may be requested on pick-up.</p><h2>Privacy</h2><p>This site sets no cookies, does not track visits and sends no form to any server; only your language choice is stored in your own browser. When you order, your mail app sends me an e-mail with your name, address and message: I use them only to handle the order and share them with no one. My e-mail is provided by Google (Gmail). The site is hosted by <span class=\"ph\">[host, e.g. GitHub Pages, GitHub Inc., USA]</span>, which may log visitors' IP addresses for technical and security purposes. You can ask me at any time what data I hold about you and have it corrected or deleted (Swiss Federal Act on Data Protection, FADP).</p><h2>Rights</h2><p>Drawings and texts: © Noah Robyr. Vineyard map: Domaine Pierre Robyr. Fonts: Cormorant Garamond (Christian Thalmann) and Mrs Saint Delafield (Alejandro Paul, modified version “SLC Script”), under the SIL Open Font License 1.1.</p>",
     stockH: "Magnums available", open: "click to open",
     prev: {
       info: "Technical sheet and vineyard: Corin de la Crête, 667 m, due south.",
@@ -677,22 +712,30 @@ const DATA = {"w": 1074, "h": 1464, "eyes": [{"e": [253, 273, 70, 19], "p": [269
     g.el.addEventListener('click', e => {
       if (!narrow || reduceMotion) return;
       e.preventDefault();
-      const r = g.el.getBoundingClientRect(), V = document.getElementById('veil');
-      V.classList.add('fixe');
-      V.style.setProperty('--vx', r.left + r.width / 2 + 'px');
-      V.style.setProperty('--vy', r.top + r.height / 2 + 'px');
-      void V.offsetWidth;                                 // applique le nouveau centre sans transition
-      V.classList.remove('fixe');
       g.el.classList.remove('nudge'); void g.el.offsetWidth; g.el.classList.add('nudge');
-      setTimeout(() => { location.hash = g.page; }, 220);
+      openFrom(g.el, g.page);
     });
   }
+  // téléphone : place le centre du disque aubergine sur l'élément touché, puis ouvre la page
+  function openFrom(el, page) {
+    const r = el.getBoundingClientRect(), V = document.getElementById('veil');
+    V.classList.add('fixe');
+    V.style.setProperty('--vx', r.left + r.width / 2 + 'px');
+    V.style.setProperty('--vy', r.top + r.height / 2 + 'px');
+    void V.offsetWidth;                                   // applique le nouveau centre sans transition
+    V.classList.remove('fixe');
+    setTimeout(() => { location.hash = page; }, 220);
+  }
+  document.getElementById('mlink').addEventListener('click', e => {
+    if (!narrow || reduceMotion) return;
+    e.preventDefault(); openFrom(e.currentTarget, 'mentions');
+  });
 
   // ---------- Pages ----------
   let prevPage = null, ecritT = 0;
   function route() {
     const id = location.hash.slice(1);
-    const page = ['info', 'degustation', 'histoire', 'commande'].includes(id) ? id : 'home';
+    const page = ['info', 'degustation', 'histoire', 'commande', 'mentions'].includes(id) ? id : 'home';
     clearTimeout(ecritT);
     if (prevPage !== null && page !== prevPage) {
       if (page === 'home') ecritT = setTimeout(() => document.body.classList.add('ecrit'), 1100);   // quand la lumière revient
@@ -732,6 +775,7 @@ const DATA = {"w": 1074, "h": 1464, "eyes": [{"e": [253, 273, 70, 19], "p": [269
     $('specs-wine').innerHTML = rows(t.wine);
     $('specs-parcel').innerHTML = rows(t.parcel);
     $('story').innerHTML = t.story.map(p => `<p>${p}</p>`).join('');
+    $('legal-txt').innerHTML = t.legal;
     $('tasting').innerHTML = t.tasting.map(x => `<div><span>${x}</span><span class="placeholder">—</span></div>`).join('');
     $('stock-txt').textContent = t.stock(CONFIG.stock, CONFIG.total);
     $('side-n').textContent = CONFIG.stock; $('side-t').textContent = CONFIG.total;
